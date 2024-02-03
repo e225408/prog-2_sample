@@ -10,10 +10,10 @@ public class Main {
      * @param args コマンドライン引数。
      */
     public static void main(String[] args) {
-        Player player1 = new Player("Player");
-        Bot bot1 = new Bot("Bot");
+        GamePlayer player1 = new GamePlayer("Player");
+        BotBot bot1 = new BotBot("Bot");
 
-        GameController gameController = new GameController(player1, bot1);
+        Game2 gameController = new Game2(player1, bot1);
         gameController.startGame();
     }
 
