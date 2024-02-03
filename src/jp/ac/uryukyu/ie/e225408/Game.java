@@ -14,7 +14,7 @@ public class Game {
     /**
      * Deckクラスのオブジェクト。
      */
-    private Deck deck;
+    private CardDeck deck;
     /**
      * ポーカーで場に出るコミュニティカードのArrayList。
      */
@@ -30,15 +30,15 @@ public class Game {
     /**
      * Playerクラスのオブジェクト。
      */
-    private Player player;
+    private GamePlayer player;
     /**
      * Botクラスのオブジェクト。
      */
-    private Bot bot;
+    private BotBot bot;
     /**
      * GameControllerクラスのオブジェクト。
      */
-    private GameController gameController;
+    private Game2 gameController;
 
     /**
      * Gameクラスのコンストラクタ。
@@ -47,8 +47,8 @@ public class Game {
      * @param _bot　Botクラスのオブジェクト。
      * @param _gameController　GameControllerクラスのオブジェクト。
      */
-    public Game(Player _player, Bot _bot, GameController _gameController) {
-        this.deck = new Deck();
+    public Game(GamePlayer _player, BotBot _bot, Game2 _gameController) {
+        this.deck = new CardDeck();
         this.communityCard = new ArrayList<Card>();
         this.gameController = _gameController;
         this.player = _player;
@@ -61,7 +61,7 @@ public class Game {
      * プレイヤーに手札を追加するメソッド。
      * @param player プレイヤーのオブジェクト。
      */
-    public void addHand(Player player) {
+    public void addHand(GamePlayer player) {
         player.setHand(deck.deal());
         player.setHand(deck.deal());
     }
@@ -109,7 +109,7 @@ public class Game {
      * @param _player プレイヤーのオブジェクト。
      * @param amount ベットする金額。
      */
-    public void bet(Player _player, Integer amount) {
+    public void bet(GamePlayer _player, Integer amount) {
         if (amount == null) {
             System.out.println("Enter the amount you want to bet:");
         }
@@ -131,7 +131,7 @@ public class Game {
      * プレイヤーがコールするためのメソッド。
      * @param _player プレイヤーのオブジェクト。
      */
-    public void call(Player _player) {
+    public void call(GamePlayer _player) {
         if (_player.getScore() >= currentTurnPot) {
             _player.setScore(_player.getScore() - currentTurnPot);  // プレイヤーのスコアから追加のコール額を差し引く
             this.pot += currentTurnPot;  // ポットに追加のコール額を追加
@@ -147,7 +147,7 @@ public class Game {
      * プレイヤーがチェックするためのメソッド。
      * @param _player プレイヤーのオブジェクト。
      */    
-    public void check(Player _player) {
+    public void check(GamePlayer _player) {
         System.out.println(_player.getName() + " checks.\n");
     }    
 
@@ -155,7 +155,7 @@ public class Game {
      * プレイヤーがフォールドするためのメソッド。
      * @param _player プレイヤーのオブジェクト。
      */    
-    public void fold(Player _player) {
+    public void fold(GamePlayer _player) {
         System.out.println(_player.getName() + " folds.\n");
         _player.setStatus(false);  // プレイヤーのステータスをfalseに設定してゲームから撤退
     }    
@@ -166,21 +166,21 @@ public class Game {
      * @return 勝者の名前と役、または「引き分け」を表す文字列。
      */    
     public String determineWinner() {
-        String playerHand = HandEvaluator.evaluateHand(player, this);
-        String botHand = HandEvaluator.evaluateHand(bot, this);
+        String playerHand = Hand.evaluateHand(player, this);
+        String botHand = Hand.evaluateHand(bot, this);
 
         // 役の強さを表すマップ(辞書型的なもの)
         Map<String, Integer> handStrengths = new HashMap<>();
-        handStrengths.put(HandEvaluator.HIGH_CARD, 1);
-        handStrengths.put(HandEvaluator.ONE_PAIR, 2);
-        handStrengths.put(HandEvaluator.TWO_PAIR, 3);
-        handStrengths.put(HandEvaluator.THREE_OF_A_KIND, 4);
-        handStrengths.put(HandEvaluator.STRAIGHT, 5);
-        handStrengths.put(HandEvaluator.FLUSH, 6);
-        handStrengths.put(HandEvaluator.FULL_HOUSE, 7);
-        handStrengths.put(HandEvaluator.FOUR_OF_A_KIND, 8);
-        handStrengths.put(HandEvaluator.STRAIGHT_FLUSH, 9);
-        handStrengths.put(HandEvaluator.ROYAL_FLUSH, 10);
+        handStrengths.put(Hand.HIGH_CARD, 1);
+        handStrengths.put(Hand.ONE_PAIR, 2);
+        handStrengths.put(Hand.TWO_PAIR, 3);
+        handStrengths.put(Hand.THREE_OF_A_KIND, 4);
+        handStrengths.put(Hand.STRAIGHT, 5);
+        handStrengths.put(Hand.FLUSH, 6);
+        handStrengths.put(Hand.FULL_HOUSE, 7);
+        handStrengths.put(Hand.FOUR_OF_A_KIND, 8);
+        handStrengths.put(Hand.STRAIGHT_FLUSH, 9);
+        handStrengths.put(Hand.ROYAL_FLUSH, 10);
 
         int playerStrength = handStrengths.get(playerHand);
         int botStrength = handStrengths.get(botHand);
